@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وميض - نظام التكاليف والأسعار</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo" id="companyLogo">وميض</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">الرئيسية</a></li>
+            <li><a href="materials.html">المواد الخام</a></li>
+            <li><a href="products.html">المنتجات</a></li>
+            <li><a href="quotes.html">عروض الأسعار</a></li>
+            <li><a href="company.html">إعدادات الشركة</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>👋 مرحباً بك في نظوم وضح</h1>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>المواد الخام</h3>
+                <p class="stat-number" id="materialsCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>المنتجات</h3>
+                <p class="stat-number" id="productsCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>عروض الأسعار</h3>
+                <p class="stat-number" id="quotesCount">0</p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <a href="materials.html" class="btn btn-primary">+ إضافة مادة خام</a>
+            <a href="products.html" class="btn btn-primary">+ إضافة منتج</a>
+            <a href="quotes.html" class="btn btn-success">+ إنشاء عرض سعر</a>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDashboard();
+            loadCompanyInfo();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عروض الأسعار - وضح</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo" id="companyLogo">وميض</div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="materials.html">المواد الخام</a></li>
+            <li><a href="products.html">المنتجات</a></li>
+            <li><a href="quotes.html" class="active">عروض الأسعار</a></li>
+            <li><a href="company.html">إعدادات الشركة</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>📄 عروض الأسعار</h1>
+
+        <div class="form-section">
+            <h2>إنشاء عرض سعر جديد</h2>
+            <form id="quoteForm" onsubmit="createQuote(event)">
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label>اسم المشتري</label>
+                        <input type="text" id="quoteClient" required placeholder="اسم العميل">
+                    </div>
+                    <div class="form-group">
+                        <label>تاريخ العرض</label>
+                        <input type="date" id="quoteDate" required>
+                    </div>
+                </div>
+
+                <div id="quoteItems"></div>
+                <button type="button" class="btn btn-secondary" onclick="addQuoteItem()">+ إضافة منتج</button>
+
+                <div class="quote-summary">
+                    <p>الإجمالي: <strong id="quoteTotal">0</strong> جنيه</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary">✅ تأكيد الطلب وخصم من المخزون</button>
+                <button type="button" class="btn btn-success" onclick="printQuote()">🖨️ طباعة عرض السعر</button>
+            </form>
+        </div>
+
+        <div class="quotes-list" id="quotesList"></div>
+    </div>
+
+    <div id="printTemplate" style="display:none;">
+        <div class="print-quote">
+            <div class="print-header">
+                <img id="printLogo" src="" alt="Logo" style="max-height:80px;">
+                <div class="print-company">
+                    <h2 id="printCompanyName">وميض</h2>
+                    <p id="printCompanyAddress"></p>
+                    <p id="printCompanyPhones"></p>
+                </div>
+            </div>
+            <hr>
+            <div class="print-info">
+                <p><strong>عرض سعر رقم:</strong> <span id="printQuoteNo"></span></p>
+                <p><strong>التاريخ:</strong> <span id="printQuoteDate"></span></p>
+                <p><strong>العميل:</strong> <span id="printClient"></span></p>
+            </div>
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>المنتج</th>
+                        <th>الكمية</th>
+                        <th>سعر الوحدة</th>
+                        <th>الإجمالي</th>
+                    </tr>
+                </thead>
+                <tbody id="printItems"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" style="text-align:left;"><strong>الإجمالي الكلي:</strong></td>
+                        <td><strong id="printTotal"></strong> جنيه</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="print-footer">
+                <p>شكراً لتعاملكم معنا</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCompanyInfo();
+            document.getElementById('quoteDate').valueAsDate = new Date();
+            addQuoteItem();
+            renderQuotes();
+        });
+    </script>
+</body>
+</html>

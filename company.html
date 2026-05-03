@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات الشركة - وضح</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo" id="companyLogo">وميض</div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="materials.html">المواد الخام</a></li>
+            <li><a href="products.html">المنتجات</a></li>
+            <li><a href="quotes.html">عروض الأسعار</a></li>
+            <li><a href="company.html" class="active">إعدادات الشركة</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>⚙️ إعدادات الشركة</h1>
+
+        <div class="form-section">
+            <form id="companyForm" onsubmit="saveCompany(event)">
+                <div class="form-group required">
+                    <label>اسم الشركة</label>
+                    <input type="text" id="compName" required value="وميض">
+                </div>
+                <div class="form-group">
+                    <label>الشعار (Logo)</label>
+                    <input type="file" id="compLogo" accept="image/*" onchange="previewImage(event, 'compLogoPreview')">
+                    <img id="compLogoPreview" class="image-preview" style="display:none; max-height:100px;">
+                </div>
+                <div class="form-group">
+                    <label>العنوان</label>
+                    <textarea id="compAddress" rows="2" placeholder="عنوان الشركة"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>أرقام التواصل</label>
+                    <input type="text" id="compPhones" placeholder="مثال: 01234567890 - 0223456789">
+                </div>
+                <button type="submit" class="btn btn-primary">💾 حفظ الإعدادات</button>
+            </form>
+        </div>
+
+        <div class="danger-zone">
+            <h3>⚠️ منطقة الخطر</h3>
+            <button class="btn btn-danger" onclick="exportData()">📥 تصدير البيانات (JSON)</button>
+            <button class="btn btn-danger" onclick="document.getElementById('importFile').click()">📤 استيراد البيانات</button>
+            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+            <button class="btn btn-danger" onclick="clearAllData()">🗑️ مسح جميع البيانات</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCompanyInfo();
+            const company = JSON.parse(localStorage.getItem('company') || '{}');
+            if(company.name) document.getElementById('compName').value = company.name;
+            if(company.address) document.getElementById('compAddress').value = company.address;
+            if(company.phones) document.getElementById('compPhones').value = company.phones;
+            if(company.logo) {
+                document.getElementById('compLogoPreview').src = company.logo;
+                document.getElementById('compLogoPreview').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
