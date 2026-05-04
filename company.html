@@ -3,53 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إعدادات الشركة - وضح</title>
+    <title>إعدادات الشركة - وميض</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo" id="companyLogo">وميض</div>
+        <div class="logo">
+            <div class="logo-icon">💡</div>
+            <span id="companyLogo">وميض</span>
+        </div>
         <ul class="nav-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="materials.html">المواد الخام</a></li>
-            <li><a href="products.html">المنتجات</a></li>
-            <li><a href="quotes.html">عروض الأسعار</a></li>
-            <li><a href="company.html" class="active">إعدادات الشركة</a></li>
+            <li><a href="index.html">🏠 الرئيسية</a></li>
+            <li><a href="materials.html">📦 المواد الخام</a></li>
+            <li><a href="products.html">🏭 المنتجات</a></li>
+            <li><a href="quotes.html">📋 عروض الأسعار</a></li>
+            <li><a href="expenses.html">💸 المصاريف</a></li>
+            <li><a href="company.html" class="active">⚙️ إعدادات</a></li>
         </ul>
     </nav>
 
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="container">
-        <h1>⚙️ إعدادات الشركة</h1>
+        <div class="page-title" style="margin-bottom:1.5rem;">⚙️ إعدادات <span style="color:var(--primary);">الشركة</span></div>
 
         <div class="form-section">
+            <h2>🏢 بيانات الشركة</h2>
             <form id="companyForm" onsubmit="saveCompany(event)">
-                <div class="form-group required">
-                    <label>اسم الشركة</label>
-                    <input type="text" id="compName" required value="وميض">
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label>اسم الشركة</label>
+                        <input type="text" id="compName" required value="وميض" placeholder="اسم شركتك أو مشروعك">
+                    </div>
+                    <div class="form-group">
+                        <label>الشعار (Logo)</label>
+                        <input type="file" id="compLogo" accept="image/*" onchange="previewImage(event, 'compLogoPreview')">
+                        <img id="compLogoPreview" class="image-preview" style="display:none; max-height:100px;">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>الشعار (Logo)</label>
-                    <input type="file" id="compLogo" accept="image/*" onchange="previewImage(event, 'compLogoPreview')">
-                    <img id="compLogoPreview" class="image-preview" style="display:none; max-height:100px;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>العنوان</label>
+                        <textarea id="compAddress" rows="2" placeholder="عنوان الشركة أو المشروع"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>أرقام التواصل</label>
+                        <input type="text" id="compPhones" placeholder="مثال: 01234567890 - 0223456789">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>العنوان</label>
-                    <textarea id="compAddress" rows="2" placeholder="عنوان الشركة"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>أرقام التواصل</label>
-                    <input type="text" id="compPhones" placeholder="مثال: 01234567890 - 0223456789">
-                </div>
-                <button type="submit" class="btn btn-primary">💾 حفظ الإعدادات</button>
+                <button type="submit" class="btn btn-primary btn-lg">💾 حفظ الإعدادات</button>
             </form>
+        </div>
+
+        <div class="form-section">
+            <h2>💾 إدارة البيانات</h2>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <button class="btn btn-outline" onclick="exportData()">📥 تصدير البيانات (JSON)</button>
+                <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">📤 استيراد البيانات</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+            </div>
         </div>
 
         <div class="danger-zone">
             <h3>⚠️ منطقة الخطر</h3>
-            <button class="btn btn-danger" onclick="exportData()">📥 تصدير البيانات (JSON)</button>
-            <button class="btn btn-danger" onclick="document.getElementById('importFile').click()">📤 استيراد البيانات</button>
-            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
-            <button class="btn btn-danger" onclick="clearAllData()">🗑️ مسح جميع البيانات</button>
+            <p style="color:var(--gray); font-size:0.9rem; margin-bottom:1rem;">هذه الخطوة لا يمكن التراجع عنها. سيتم حذف جميع البيانات نهائياً.</p>
+            <button class="btn btn-danger" onclick="clearAllData()">🗑️ مسح جميع البيانات نهائياً</button>
         </div>
     </div>
 
@@ -57,7 +75,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             loadCompanyInfo();
-            const company = JSON.parse(localStorage.getItem('company') || '{}');
+            const company = JSON.parse(localStorage.getItem('wamid_company') || '{}');
             if(company.name) document.getElementById('compName').value = company.name;
             if(company.address) document.getElementById('compAddress').value = company.address;
             if(company.phones) document.getElementById('compPhones').value = company.phones;

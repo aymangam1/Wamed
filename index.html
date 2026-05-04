@@ -8,37 +8,100 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo" id="companyLogo">وميض</div>
+        <div class="logo">
+            <div class="logo-icon">💡</div>
+            <span id="companyLogo">وميض</span>
+        </div>
         <ul class="nav-links">
-            <li><a href="index.html" class="active">الرئيسية</a></li>
-            <li><a href="materials.html">المواد الخام</a></li>
-            <li><a href="products.html">المنتجات</a></li>
-            <li><a href="quotes.html">عروض الأسعار</a></li>
-            <li><a href="company.html">إعدادات الشركة</a></li>
+            <li><a href="index.html" class="active">🏠 الرئيسية</a></li>
+            <li><a href="materials.html">📦 المواد الخام</a></li>
+            <li><a href="products.html">🏭 المنتجات</a></li>
+            <li><a href="quotes.html">📋 عروض الأسعار</a></li>
+            <li><a href="expenses.html">💸 المصاريف</a></li>
+            <li><a href="company.html">⚙️ إعدادات</a></li>
         </ul>
     </nav>
 
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="container">
-        <h1>👋 مرحباً بك في نظوم وضح</h1>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>المواد الخام</h3>
-                <p class="stat-number" id="materialsCount">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>المنتجات</h3>
-                <p class="stat-number" id="productsCount">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>عروض الأسعار</h3>
-                <p class="stat-number" id="quotesCount">0</p>
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1>👋 أهلاً بك في <span id="heroCompanyName">وميض</span></h1>
+                <p>نظام متكامل لإدارة تكاليف الإنتاج، تسعير المنتجات، وإنشاء عروض الأسعار باحترافية</p>
+                <div class="hero-badges">
+                    <span class="hero-badge">📦 إدارة المواد الخام</span>
+                    <span class="hero-badge">🏭 تسعير المنتجات</span>
+                    <span class="hero-badge">📋 عروض الأسعار</span>
+                    <span class="hero-badge">💸 المصاريف التشغيلية</span>
+                </div>
             </div>
         </div>
 
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">📦</div>
+                <div class="stat-info">
+                    <h3>المواد الخام</h3>
+                    <div class="stat-number purple" id="materialsCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">🏭</div>
+                <div class="stat-info">
+                    <h3>المنتجات</h3>
+                    <div class="stat-number green" id="productsCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">📋</div>
+                <div class="stat-info">
+                    <h3>عروض الأسعار</h3>
+                    <div class="stat-number orange" id="quotesCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">💸</div>
+                <div class="stat-info">
+                    <h3>المصاريف الشهرية</h3>
+                    <div class="stat-number red" id="expensesTotal">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <h2 style="font-size:1.1rem; font-weight:700; color:var(--gray); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.5px;">وصول سريع</h2>
         <div class="quick-actions">
-            <a href="materials.html" class="btn btn-primary">+ إضافة مادة خام</a>
-            <a href="products.html" class="btn btn-primary">+ إضافة منتج</a>
-            <a href="quotes.html" class="btn btn-success">+ إنشاء عرض سعر</a>
+            <a href="materials.html" class="action-card">
+                <div class="icon">📦</div>
+                <span>إضافة مادة خام</span>
+            </a>
+            <a href="products.html" class="action-card">
+                <div class="icon">🏭</div>
+                <span>إضافة منتج</span>
+            </a>
+            <a href="quotes.html" class="action-card">
+                <div class="icon">📋</div>
+                <span>إنشاء عرض سعر</span>
+            </a>
+            <a href="expenses.html" class="action-card">
+                <div class="icon">💸</div>
+                <span>إدارة المصاريف</span>
+            </a>
+            <a href="company.html" class="action-card">
+                <div class="icon">⚙️</div>
+                <span>إعدادات الشركة</span>
+            </a>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="form-section">
+            <h2>📊 ملخص سريع</h2>
+            <div id="dashboardSummary" style="color:var(--gray); font-size:0.95rem; line-height:2;">
+                جاري التحميل...
+            </div>
         </div>
     </div>
 
@@ -47,7 +110,52 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateDashboard();
             loadCompanyInfo();
+            renderDashboardSummary();
         });
+
+        function renderDashboardSummary() {
+            const mats = getData('materials');
+            const prods = getData('products');
+            const quotes = getData('quotes');
+            const expenses = getData('expenses');
+            const company = JSON.parse(localStorage.getItem('wamid_company') || '{}');
+            
+            if(company.name) {
+                document.getElementById('heroCompanyName').textContent = company.name;
+            }
+
+            const monthlyExp = expenses.filter(e => e.period === 'monthly').reduce((s, e) => s + e.amount, 0);
+            const yearlyExp = expenses.filter(e => e.period === 'yearly').reduce((s, e) => s + e.amount / 12, 0);
+            const totalMonthly = monthlyExp + yearlyExp;
+
+            document.getElementById('expensesTotal').textContent = totalMonthly.toFixed(0) + ' ج.م';
+
+            const rev = quotes.reduce((s, q) => s + q.total, 0);
+            const lowStock = mats.filter(m => m.stock <= 5);
+
+            const summary = document.getElementById('dashboardSummary');
+            summary.innerHTML = `
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:1rem;">
+                    <div style="background:rgba(108,92,231,0.06); padding:1rem; border-radius:10px;">
+                        <div style="font-size:0.82rem; color:var(--gray); font-weight:600;">إجمالي إيرادات الطلبات</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">${rev.toFixed(2)} ج.م</div>
+                    </div>
+                    <div style="background:rgba(0,184,148,0.06); padding:1rem; border-radius:10px;">
+                        <div style="font-size:0.82rem; color:var(--gray); font-weight:600;">إجمالي المنتجات المسعّرة</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:var(--secondary);">${prods.length} منتج</div>
+                    </div>
+                    <div style="background:${lowStock.length > 0 ? 'rgba(214,48,49,0.06)' : 'rgba(253,203,110,0.1)'}; padding:1rem; border-radius:10px;">
+                        <div style="font-size:0.82rem; color:var(--gray); font-weight:600;">مواد منخفضة المخزون (≤5)</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:${lowStock.length > 0 ? 'var(--danger)' : 'var(--gray)'};">${lowStock.length} مادة</div>
+                    </div>
+                    <div style="background:rgba(214,48,49,0.05); padding:1rem; border-radius:10px;">
+                        <div style="font-size:0.82rem; color:var(--gray); font-weight:600;">المصاريف التشغيلية / شهر</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:var(--danger);">${totalMonthly.toFixed(2)} ج.م</div>
+                    </div>
+                </div>
+                ${lowStock.length > 0 ? `<div style="margin-top:1rem; background:rgba(214,48,49,0.06); border:1px solid rgba(214,48,49,0.2); border-radius:8px; padding:0.75rem 1rem; font-size:0.88rem; color:var(--danger);">⚠️ مواد تحتاج تعبئة: ${lowStock.map(m=>m.name).join('، ')}</div>` : ''}
+            `;
+        }
     </script>
 </body>
 </html>

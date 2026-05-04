@@ -3,59 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المواد الخام - وضح</title>
+    <title>المواد الخام - وميض</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo" id="companyLogo">وميض</div>
+        <div class="logo">
+            <div class="logo-icon">💡</div>
+            <span id="companyLogo">وميض</span>
+        </div>
         <ul class="nav-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="materials.html" class="active">المواد الخام</a></li>
-            <li><a href="products.html">المنتجات</a></li>
-            <li><a href="quotes.html">عروض الأسعار</a></li>
-            <li><a href="company.html">إعدادات الشركة</a></li>
+            <li><a href="index.html">🏠 الرئيسية</a></li>
+            <li><a href="materials.html" class="active">📦 المواد الخام</a></li>
+            <li><a href="products.html">🏭 المنتجات</a></li>
+            <li><a href="quotes.html">📋 عروض الأسعار</a></li>
+            <li><a href="expenses.html">💸 المصاريف</a></li>
+            <li><a href="company.html">⚙️ إعدادات</a></li>
         </ul>
     </nav>
 
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✏️ تعديل المادة الخام</h3>
+                <button class="modal-close" onclick="closeEditModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editMatId">
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label>اسم المادة</label>
+                        <input type="text" id="editMatName" required>
+                    </div>
+                    <div class="form-group required">
+                        <label>وحدة الاستهلاك</label>
+                        <select id="editMatUnit">
+                            <option value="جرام">جرام</option>
+                            <option value="كيلوجرام">كيلوجرام</option>
+                            <option value="مل">مل</option>
+                            <option value="لتر">لتر</option>
+                            <option value="سم">سم</option>
+                            <option value="متر">متر</option>
+                            <option value="قطعة">قطعة</option>
+                            <option value="وحدة">وحدة</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="package-toggle-row">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editIsPackage" onchange="toggleEditPackage()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <div>
+                        <div class="toggle-label">📦 يُشترى كباكيدج/عبوة</div>
+                        <div class="toggle-desc">مثل: شيكارة جبس تحتوي على 25 كيلو، أو عطر 30 مل</div>
+                    </div>
+                </div>
+
+                <div class="package-fields" id="editPackageFields">
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>اسم الباكيدج</label>
+                            <input type="text" id="editPackageName" placeholder="مثال: شيكارة، زجاجة، علبة">
+                        </div>
+                        <div class="form-group required">
+                            <label>كمية وحدة الاستهلاك في الباكيدج</label>
+                            <input type="number" id="editUnitsPerPackage" min="0.001" step="0.001" placeholder="مثال: 25000 (جرام في شيكارة 25كج)">
+                            <span class="help-text">كم <span id="editUnitPerPkgLabel">وحدة</span> في كل باكيدج؟</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>سعر الباكيدج الواحد (ج.م)</label>
+                            <input type="number" id="editPackagePrice" min="0" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>عدد الباكيدجات في المخزون</label>
+                            <input type="number" id="editPackageStock" min="0" step="1" value="0">
+                        </div>
+                    </div>
+                    <div id="editPackageCalcPreview" style="background:rgba(108,92,231,0.06);padding:0.75rem 1rem;border-radius:8px;font-size:0.88rem;color:var(--gray);margin-top:0.5rem;"></div>
+                </div>
+
+                <div id="editSimpleFields">
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>السعر لكل وحدة (ج.م)</label>
+                            <input type="number" id="editMatPrice" min="0" step="0.001" placeholder="0.000">
+                        </div>
+                        <div class="form-group">
+                            <label>الكمية في المخزون (بالوحدة)</label>
+                            <input type="number" id="editMatStock" min="0" step="0.01" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+                    <button class="btn btn-primary btn-block" onclick="saveEditMaterial()">💾 حفظ التعديلات</button>
+                    <button class="btn btn-secondary" onclick="closeEditModal()">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="page-header">
-            <h1>📦 المواد الخام</h1>
-            <div class="view-toggle">
-                <button class="btn btn-toggle active" onclick="setView('card')">🎴 بطاقات</button>
-                <button class="btn btn-toggle" onclick="setView('list')">📋 قائمة</button>
+            <div>
+                <div class="page-title">📦 المواد <span>الخام</span></div>
+            </div>
+            <div class="view-toggle" style="display:flex; gap:0.5rem;">
+                <button class="btn btn-toggle btn-sm active" onclick="setView('card')">🎴 بطاقات</button>
+                <button class="btn btn-toggle btn-sm" onclick="setView('list')">📋 قائمة</button>
             </div>
         </div>
 
         <div class="form-section">
-            <h2>إضافة مادة خام جديدة</h2>
+            <h2>➕ إضافة مادة خام جديدة</h2>
             <form id="materialForm" onsubmit="addMaterial(event)">
                 <div class="form-row">
                     <div class="form-group required">
                         <label>اسم المادة</label>
-                        <input type="text" id="matName" required placeholder="مثال: خشب زان">
+                        <input type="text" id="matName" required placeholder="مثال: جبس، عطر فانيلا، قماش...">
                     </div>
                     <div class="form-group required">
-                        <label>السعر (جنيه)</label>
-                        <input type="number" id="matPrice" required min="0" step="0.01" placeholder="0.00">
+                        <label>وحدة الاستهلاك</label>
+                        <select id="matUnit" onchange="updateUnitLabels()">
+                            <option value="جرام">جرام (g)</option>
+                            <option value="كيلوجرام">كيلوجرام (kg)</option>
+                            <option value="مل">مليلتر (ml)</option>
+                            <option value="لتر">لتر (L)</option>
+                            <option value="سم">سنتيمتر (cm)</option>
+                            <option value="متر">متر (m)</option>
+                            <option value="قطعة">قطعة</option>
+                            <option value="وحدة">وحدة</option>
+                        </select>
+                        <span class="help-text">الوحدة التي تستهلكها عند صنع المنتج</span>
                     </div>
                 </div>
+
+                <!-- Package Toggle -->
+                <div class="package-toggle-row">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="isPackage" onchange="togglePackage()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <div>
+                        <div class="toggle-label">📦 يُشترى كباكيدج / عبوة</div>
+                        <div class="toggle-desc">فعّل هذا إذا كنت تشتري المادة في شكل عبوات (شيكارة، زجاجة، علبة...) وتستهلكها بوحدات أصغر</div>
+                    </div>
+                </div>
+
+                <!-- Package Fields -->
+                <div class="package-fields" id="packageFields">
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>اسم الباكيدج</label>
+                            <input type="text" id="packageName" placeholder="مثال: شيكارة، زجاجة، علبة، كيس">
+                        </div>
+                        <div class="form-group required">
+                            <label>كمية وحدة الاستهلاك في الباكيدج الواحد</label>
+                            <input type="number" id="unitsPerPackage" min="0.001" step="0.001" placeholder="مثال: 30000" oninput="calcPackagePreview()">
+                            <span class="help-text" id="unitsPerPkgHint">كم جرام في الباكيدج الواحد؟</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>سعر الباكيدج الواحد (ج.م)</label>
+                            <input type="number" id="packagePrice" min="0" step="0.01" placeholder="0.00" oninput="calcPackagePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>عدد الباكيدجات في المخزون الحالي</label>
+                            <input type="number" id="packageStock" min="0" step="1" value="0" oninput="calcPackagePreview()">
+                        </div>
+                    </div>
+                    <div id="packageCalcPreview" style="background:rgba(108,92,231,0.06);padding:0.75rem 1rem;border-radius:8px;font-size:0.88rem;color:var(--gray);margin-top:0.5rem;"></div>
+                </div>
+
+                <!-- Simple (non-package) Fields -->
+                <div id="simpleFields">
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>السعر لكل <span id="pricePerUnitLabel">وحدة</span> (ج.م)</label>
+                            <input type="number" id="matPrice" min="0" step="0.001" placeholder="0.000">
+                        </div>
+                        <div class="form-group">
+                            <label>الكمية في المخزون (بالوحدة)</label>
+                            <input type="number" id="matStock" min="0" step="0.01" placeholder="0" value="0">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label>الكمية في المخزون</label>
-                        <input type="number" id="matStock" min="0" step="0.01" placeholder="0" value="0">
+                        <label>اللون التمييزي</label>
+                        <input type="color" id="matColor" value="#6C5CE7">
                     </div>
                     <div class="form-group">
-                        <label>اللون</label>
-                        <input type="color" id="matColor" value="#4CAF50">
-                    </div>
-                    <div class="form-group">
-                        <label>الصورة</label>
+                        <label>صورة المادة</label>
                         <input type="file" id="matImage" accept="image/*" onchange="previewImage(event, 'matPreview')">
                         <img id="matPreview" class="image-preview" style="display:none;">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">💾 حفظ المادة</button>
+
+                <button type="submit" class="btn btn-primary btn-lg">💾 حفظ المادة</button>
             </form>
         </div>
 

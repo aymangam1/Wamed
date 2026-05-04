@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المصاريف التشغيلية - وميض</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-brand">⚡ وميض</a>
+        <ul class="nav-links">
+            <li><a href="index.html">🏠 الرئيسية</a></li>
+            <li><a href="materials.html">🧪 المواد الخام</a></li>
+            <li><a href="products.html">📦 المنتجات</a></li>
+            <li><a href="quotes.html">📋 الطلبات</a></li>
+            <li><a href="expenses.html" class="active">💸 المصاريف</a></li>
+            <li><a href="company.html">🏢 الشركة</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- Summary Cards -->
+    <div class="stats-grid" id="expenseSummary">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg,#e17055,#d63031);">💸</div>
+            <div class="stat-info">
+                <div class="stat-value" id="totalMonthly">0.00</div>
+                <div class="stat-label">إجمالي شهري (ج.م)</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg,#6c5ce7,#a29bfe);">📅</div>
+            <div class="stat-info">
+                <div class="stat-value" id="totalYearly">0.00</div>
+                <div class="stat-label">إجمالي سنوي (ج.م)</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg,#00b894,#55efc4);">📆</div>
+            <div class="stat-info">
+                <div class="stat-value" id="totalDaily">0.00</div>
+                <div class="stat-label">تكلفة يومية (ج.م)</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg,#fdcb6e,#e67e22);">🔢</div>
+            <div class="stat-info">
+                <div class="stat-value" id="expenseCount">0</div>
+                <div class="stat-label">عدد بنود المصاريف</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Form -->
+    <div class="form-card">
+        <h2 class="form-title">➕ إضافة مصروف تشغيلي</h2>
+        <form id="expenseForm" onsubmit="addExpense(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="expName">اسم المصروف *</label>
+                    <input type="text" id="expName" placeholder="مثال: فاتورة الكهرباء" required>
+                </div>
+                <div class="form-group">
+                    <label for="expCategory">الفئة *</label>
+                    <select id="expCategory" required>
+                        <option value="">اختر الفئة</option>
+                        <option value="كهرباء">⚡ كهرباء</option>
+                        <option value="مياه">💧 مياه</option>
+                        <option value="إنترنت">🌐 إنترنت</option>
+                        <option value="إيجار">🏠 إيجار</option>
+                        <option value="غاز">🔥 غاز</option>
+                        <option value="تليفون">📞 تليفون</option>
+                        <option value="رواتب">👤 رواتب</option>
+                        <option value="صيانة">🔧 صيانة</option>
+                        <option value="تسويق">📣 تسويق</option>
+                        <option value="أخرى">📌 أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expAmount">المبلغ (ج.م) *</label>
+                    <input type="number" id="expAmount" min="0" step="0.01" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label for="expPeriod">الدورية *</label>
+                    <select id="expPeriod" required>
+                        <option value="monthly">شهري</option>
+                        <option value="yearly">سنوي</option>
+                        <option value="weekly">أسبوعي</option>
+                        <option value="daily">يومي</option>
+                        <option value="once">مرة واحدة</option>
+                    </select>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="expNotes">ملاحظات</label>
+                    <input type="text" id="expNotes" placeholder="ملاحظات إضافية (اختياري)">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 إضافة المصروف</button>
+        </form>
+    </div>
+
+    <!-- Expenses List -->
+    <div class="form-card">
+        <h2 class="form-title">📋 قائمة المصاريف</h2>
+        <div id="expensesContainer"></div>
+    </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toastContainer"></div>
+
+<script src="app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        renderExpenses();
+    });
+</script>
+</body>
+</html>

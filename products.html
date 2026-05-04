@@ -3,53 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنتجات - وضح</title>
+    <title>المنتجات - وميض</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo" id="companyLogo">وميض</div>
+        <div class="logo">
+            <div class="logo-icon">💡</div>
+            <span id="companyLogo">وميض</span>
+        </div>
         <ul class="nav-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="materials.html">المواد الخام</a></li>
-            <li><a href="products.html" class="active">المنتجات</a></li>
-            <li><a href="quotes.html">عروض الأسعار</a></li>
-            <li><a href="company.html">إعدادات الشركة</a></li>
+            <li><a href="index.html">🏠 الرئيسية</a></li>
+            <li><a href="materials.html">📦 المواد الخام</a></li>
+            <li><a href="products.html" class="active">🏭 المنتجات</a></li>
+            <li><a href="quotes.html">📋 عروض الأسعار</a></li>
+            <li><a href="expenses.html">💸 المصاريف</a></li>
+            <li><a href="company.html">⚙️ إعدادات</a></li>
         </ul>
     </nav>
 
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal-overlay" id="editProductModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✏️ تعديل المنتج</h3>
+                <button class="modal-close" onclick="closeEditProductModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editProdId">
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label>اسم المنتج</label>
+                        <input type="text" id="editProdName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>اللون</label>
+                        <input type="color" id="editProdColor">
+                    </div>
+                </div>
+                <div class="pricing-strategy">
+                    <h3>💰 استراتيجية التسعير</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>نوع الزيادة</label>
+                            <select id="editMarginType" onchange="updateEditMarginLabel()">
+                                <option value="percent">نسبة مئوية (%)</option>
+                                <option value="fixed">قيمة ثابتة (ج.م)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label id="editMarginLabel">النسبة (%)</label>
+                            <input type="number" id="editMarginValue" min="0" step="0.01" oninput="updateEditPreview()">
+                        </div>
+                    </div>
+                    <div class="rounding-group">
+                        <label>🔢 تقريب السعر النهائي يدوياً:</label>
+                        <input type="number" id="editFinalPriceRounded" min="0" step="0.5" placeholder="اتركه فارغاً للحساب التلقائي">
+                    </div>
+                    <div class="calculation-preview" id="editCalcPreview">
+                        <div class="preview-item">
+                            <div class="label">التكلفة</div>
+                            <div class="value" id="editPreviewCost">0</div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="label">السعر النهائي</div>
+                            <div class="value purple" id="editPreviewPrice">0</div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="label">الربح</div>
+                            <div class="value green" id="editPreviewProfit">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+                    <button class="btn btn-primary btn-block" onclick="saveEditProduct()">💾 حفظ</button>
+                    <button class="btn btn-secondary" onclick="closeEditProductModal()">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <h1>🏭 المنتجات</h1>
+        <div class="page-title" style="margin-bottom:1.5rem;">🏭 المنتجات <span style="color:var(--primary);"></span></div>
 
         <div class="form-section">
-            <h2>إضافة منتج جديد</h2>
+            <h2>➕ إضافة منتج جديد</h2>
             <form id="productForm" onsubmit="addProduct(event)">
                 <div class="form-row">
                     <div class="form-group required">
                         <label>اسم المنتج</label>
-                        <input type="text" id="prodName" required placeholder="مثال: كرسي خشبي">
-                    </div>
-                    <div class="form-group required">
-                        <label>السعر الأساسي (جنيه)</label>
-                        <input type="number" id="prodBasePrice" required min="0" step="0.01" placeholder="0.00">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>اللون</label>
-                        <input type="color" id="prodColor" value="#2196F3">
+                        <input type="text" id="prodName" required placeholder="مثال: شمعة معطرة، جبسة ديكور...">
                     </div>
                     <div class="form-group">
-                        <label>الصورة</label>
+                        <label>اللون التمييزي</label>
+                        <input type="color" id="prodColor" value="#6C5CE7">
+                    </div>
+                    <div class="form-group">
+                        <label>صورة المنتج</label>
                         <input type="file" id="prodImage" accept="image/*" onchange="previewImage(event, 'prodPreview')">
                         <img id="prodPreview" class="image-preview" style="display:none;">
                     </div>
                 </div>
 
                 <div class="bom-section">
-                    <h3>🧩 مكونات المنتج (BOM)</h3>
+                    <h3>🧩 مكونات المنتج (BOM) — قائمة المواد الخام</h3>
                     <div id="bomItems"></div>
-                    <button type="button" class="btn btn-secondary" onclick="addBomRow()">+ إضافة مكون</button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="addBomRow()">➕ إضافة مكوّن</button>
                 </div>
 
                 <div class="pricing-strategy">
@@ -59,22 +120,36 @@
                             <label>نوع الزيادة</label>
                             <select id="marginType" onchange="updateMarginLabel()">
                                 <option value="percent">نسبة مئوية (%)</option>
-                                <option value="fixed">قيمة ثابتة (جنيه)</option>
+                                <option value="fixed">قيمة ثابتة (ج.م)</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label id="marginLabel">النسبة (%)</label>
-                            <input type="number" id="marginValue" min="0" step="0.01" placeholder="مثال: 20" oninput="calculatePreview()">
+                            <input type="number" id="marginValue" min="0" step="0.01" placeholder="مثال: 30" oninput="calculatePreview()">
                         </div>
                     </div>
+                    <div class="rounding-group">
+                        <label>🔢 تقريب السعر النهائي يدوياً (اختياري):</label>
+                        <input type="number" id="finalPriceRounded" min="0" step="0.5" placeholder="اتركه فارغاً للحساب التلقائي" oninput="calculatePreview()">
+                        <span class="help-text">مثال: إذا السعر المحسوب 48.75 وتريد تقريبه لـ 50، اكتب 50</span>
+                    </div>
                     <div class="calculation-preview" id="calcPreview">
-                        <p>التكلفة: <strong id="previewCost">0</strong> جنيه</p>
-                        <p>السعر النهائي: <strong id="previewPrice">0</strong> جنيه</p>
-                        <p>الربح: <strong id="previewProfit">0</strong> جنيه</p>
+                        <div class="preview-item">
+                            <div class="label">تكلفة المواد</div>
+                            <div class="value" id="previewCost">0.00</div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="label">السعر المحسوب</div>
+                            <div class="value purple" id="previewPrice">0.00</div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="label">الربح</div>
+                            <div class="value green" id="previewProfit">0.00</div>
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">💾 حفظ المنتج</button>
+                <button type="submit" class="btn btn-primary btn-lg">💾 حفظ المنتج</button>
             </form>
         </div>
 
